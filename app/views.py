@@ -143,6 +143,7 @@ def download_nltk_resources():
     nltk.download('punkt')
     nltk.download('stopwords')
 
+
 def generate_pdf_summary(pdf_content):
     try:
         # Using PyMuPDF to extract text from PDF
@@ -188,9 +189,9 @@ def pdf_summary(request):
         except Exception as e:
             # Handle errors, you can log the exception for debugging
             print(f"Error reading PDF content: {e}")
+        download_nltk_resources()
 
         # Generate summary
-        download_nltk_resources()
         summary = generate_pdf_summary(pdf_content)
 
         if summary:
