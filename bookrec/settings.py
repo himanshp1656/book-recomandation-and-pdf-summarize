@@ -150,6 +150,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://recomandandsummarize.azurewebsites.net",
+    "https://recommendationandsummarize.azurewebsites.net",
     # Add other trusted origins as needed
 ]
