@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <!-- User Profile Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">User Profile</h2>
+                        <p class="card-text"><strong>Username:</strong> {{ username }}</p>
+                        <p class="card-text"><strong>Email:</strong> {{ email }}</p>
+                        <!-- Add more profile information as needed -->
+                    </div>
+                </div>
+
+                <!-- User Preferences Form -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Update Preferences</h3>
+                        <form action="/profile/" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="favgenre" class="form-label">Favorite Genre:</label>
+                                <input type="text" id="favgenre" name="favgenre" class="form-control" placeholder="Enter your favorite genre" aria-label="genre" {% if favlist %} value="{{ favlist.favorite_genre }}" {% endif %}>
+                            </div>
+                
+                            <div class="mb-3">
+                                <label for="favauthor" class="form-label">Favorite Author:</label>
+                                <input type="text" id="favauthor" name="favauthor" class="form-control" placeholder="Enter your favorite author" {% if favlist %} value="{{ favlist.favorite_author }}" {% endif %}>
+                            </div>
+                
+                            <div class="mb-3">
+                                <label for="favbook" class="form-label">Favorite Book:</label>
+                                <input type="text" id="favbook" name="favbook" class="form-control" placeholder="Enter your favorite book" {% if favlist %} value="{{ favlist.favorite_book }}" {% endif %}>
+                            </div>
+                
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional, for Bootstrap features) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-d7o8xa+T8k+M6uDDpzPBAlr+1GHGpZZLiq0eO+RNtIInb/mR2frhIXByq2A2B+pl" crossorigin="anonymous"></script>
+</body>
+</html>
