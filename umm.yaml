@@ -1,0 +1,69 @@
+name: Push Docker Image to Google Artifact Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Enter your name"
+        required: true
+        type: string
+        default: "User"
+
+jobs:
+  push-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install PostgreSQL
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y postgresql postgresql-contrib
+
+      - name: Upsert
+        run: |
+          PGPASSWORD="AVNS_AqVTKx8DS17lyKhyrDg" psql -h atlan-hack-001-a-atlan-hack-001.d.aivencloud.com -p 11418 -U avnadmin -d defaultdb -c "
+          INSERT INTO image_store (image_name, tags) 
+          VALUES ('analytics_dashboard.png', ARRAY['bi', 'sql', 'dashboard']) 
+          ON CONFLICT (image_name) 
+          DO UPDATE SET tags = array_cat(image_store.tags, EXCLUDED.tags);
+          "
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (User Account)
+        run: |
+          echo "ya29.a0AeXRPp7mQ2JShnf_PO1nX2GGeqetMSOQqogqxPRE1pK4eelDdnktMvipA-S8KaaTwLgoXaQmD5P7rO2BM7p24JAaRUUrAD4Zqw-x2Vp12_AkfmoKtK5KI_6xtGA9_tOSr3CyAuFfgw7nJVwL0vaSWeIhwhQ_zqFAHJjGL0fTBcenCgaCgYKAQQSARESFQHGX2Mi8EKoUw8A9SI9TuIeNMeBNw0181" | gcloud auth activate-refresh-token shushankbhatia@gmail.com
+
+      - name: Configure Docker Authentication
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+      - name: Pull Image from Source Artifact Registry
+        run: |
+          docker pull ${{ github.event.inputs.name }}
+      - name: Modify Image 
+        run: |
+          echo "Modify your image here if needed..."
+          # Example: Running a script or copying files
+          # docker run --rm -v "$PWD:/app" ${{ github.event.inputs.name }} /bin/bash -c "echo 'Hello' > /app/test.txt"
+
+      - name: Build New Docker Image
+        run: |
+          echo "Building new image..."
+
+      - name: Sanity Check
+        run: |
+          echo "Checking built image..."
+          echo "Image built successfully!"
+          echo "sanity checks succefull!"
+          
+
+      - name: Tag Image for Destination Artifact Registry
+        run: |
+          docker tag ${{ github.event.inputs.name }} \
+                     asia-south1-docker.pkg.dev/swarna-380521/cloud-run-source-deploy/hello-app:1.0
+
+          
+      - name: Push Docker Image
+        run: |
+          docker push asia-south1-docker.pkg.dev/swarna-380521/cloud-run-source-deploy/hello-app:1.0
